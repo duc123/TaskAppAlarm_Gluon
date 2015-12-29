@@ -1,0 +1,30 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'org.javafxports:jfxmobile-plugin:1.0.6'
+    }
+    
+}
+
+
+
+apply plugin: 'org.javafxports.jfxmobile'
+
+repositories {
+    jcenter()
+}
+
+dependencies{
+    compile fileTree(dir:'src/main/resources/libs',include:'*.jar')
+}
+
+mainClassName = 'com.addressapp_gluon.TaskAlarmApp_Gluon'
+
+jfxmobile {
+    android {
+        manifest = 'src/android/AndroidManifest.xml'
+    }
+}
+
