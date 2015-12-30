@@ -20,7 +20,7 @@ dependencies{
     compile fileTree(dir:'src/main/resources/libs',include:'*.jar')
 }
 
-mainClassName = 'com.addressapp_gluon.TaskAlarmApp_Gluon'
+mainClassName = 'com.taskalarmapp_gluon.TaskAlarmApp_Gluon'
 
 jfxmobile {
     android {
