@@ -35,11 +35,11 @@ public class TaskEditorController implements Initializable {
     @FXML
     private CustomTextField taskNameTextField;
     @FXML
-    private Spinner<Integer> hour;
+    private Spinner<Integer> spinHour;
     @FXML
-    private Spinner<Integer> minute;
+    private Spinner<Integer> spinMinute;
     @FXML
-    private Spinner<Integer> second;
+    private Spinner<Integer> spinSecond;
 
     private Task task;
     private Stage dialogStage;
@@ -64,55 +64,55 @@ public class TaskEditorController implements Initializable {
     private void setupSpinner() {
 
         //Hour Spinner
-        hour.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(HOUR_MIN, HOUR_MAX, 8, 1));
-        hour.setEditable(true);
-        hour.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+        spinHour.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(HOUR_MIN, HOUR_MAX, 8, 1));
+        spinHour.setEditable(true);
+        spinHour.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (!newValue) {
-                String text = hour.getEditor().getText();
+                String text = spinHour.getEditor().getText();
                 int value;
                 try {
                     value = Integer.parseInt(text);
-                    hour.getValueFactory().setValue(value);
-                    hour.getEditor().setText(String.valueOf(value));
+                    spinHour.getValueFactory().setValue(value);
+                    spinHour.getEditor().setText(String.valueOf(value));
                 } catch (NumberFormatException ex) {
-                    hour.getValueFactory().setValue(0);
-                    hour.getEditor().setText(String.valueOf(0));
+                    spinHour.getValueFactory().setValue(0);
+                    spinHour.getEditor().setText(String.valueOf(0));
                 }
             }
         });
         //--------------------------------------------
         //Minute Spinner
-        minute.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(MINUTE_MIN, MINUTE_MAX, 8, 1));
-        minute.setEditable(true);
-        minute.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+        spinMinute.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(MINUTE_MIN, MINUTE_MAX, 8, 1));
+        spinMinute.setEditable(true);
+        spinMinute.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (!newValue) {
-                String text = minute.getEditor().getText();
+                String text = spinMinute.getEditor().getText();
                 int value;
                 try {
                     value = Integer.parseInt(text);
-                    minute.getValueFactory().setValue(value);
-                    hour.getEditor().setText(String.valueOf(value));
+                    spinMinute.getValueFactory().setValue(value);
+                    spinHour.getEditor().setText(String.valueOf(value));
                 } catch (NumberFormatException ex) {
-                    minute.getValueFactory().setValue(0);
-                    minute.getEditor().setText(String.valueOf(0));
+                    spinMinute.getValueFactory().setValue(0);
+                    spinMinute.getEditor().setText(String.valueOf(0));
                 }
             }
         });
         //--------------------------------------------
         //Second Spinner
-        second.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(SECOND_MIN, SECOND_MAX, 8, 1));
-        second.setEditable(true);
-        second.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+        spinSecond.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(SECOND_MIN, SECOND_MAX, 8, 1));
+        spinSecond.setEditable(true);
+        spinSecond.focusedProperty().addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             if (!newValue) {
-                String text = second.getEditor().getText();
+                String text = spinSecond.getEditor().getText();
                 int value;
                 try {
                     value = Integer.parseInt(text);
-                    second.getValueFactory().setValue(value);
-                    second.getEditor().setText(String.valueOf(value));
+                    spinSecond.getValueFactory().setValue(value);
+                    spinSecond.getEditor().setText(String.valueOf(value));
                 } catch (NumberFormatException ex) {
-                    second.getValueFactory().setValue(0);
-                    second.getEditor().setText(String.valueOf(0));
+                    spinSecond.getValueFactory().setValue(0);
+                    spinSecond.getEditor().setText(String.valueOf(0));
                 }
             }
         });
@@ -122,16 +122,19 @@ public class TaskEditorController implements Initializable {
     public void setTask(Task task) {
         this.task = task;
         taskNameTextField.setText(task.getName());
-        hour.getEditor().setText(String.valueOf(task.getTime().getHour()));
-        minute.getEditor().setText(String.valueOf(task.getTime().getMinute()));
-        second.getEditor().setText(String.valueOf(task.getTime().getSecond()));
+//        hour.getEditor().setText(String.valueOf(task.getTime().getHour()));
+//        minute.getEditor().setText(String.valueOf(task.getTime().getMinute()));
+//        second.getEditor().setText(String.valueOf(task.getTime().getSecond()));
+        spinHour.getValueFactory().setValue(task.getTime().getHour());
+        spinMinute.getValueFactory().setValue(task.getTime().getMinute());
+        spinSecond.getValueFactory().setValue(task.getTime().getSecond());
     }
 
     @FXML
     private void handleOkButton() {
         if (isValid()) {
             task.setName(taskNameTextField.getText());
-            LocalTime timer = LocalTime.of(hour.getValue() - 1, minute.getValue() - 1, second.getValue() - 1);
+            LocalTime timer = LocalTime.of(spinHour.getValue() == 24 ? 23 : spinHour.getValue(), spinMinute.getValue() == 60 ? 59 : spinMinute.getValue(), spinSecond.getValue() == 60 ? 59 : spinSecond.getValue());
             task.setTime(timer);
             okClicked = true;
             dialogStage.close();
@@ -145,9 +148,9 @@ public class TaskEditorController implements Initializable {
     }
 
     private boolean isValid() {
-        String errorMessage = "";
+        StringBuilder errorMessage = new StringBuilder();
         if (taskNameTextField.getText() == null || taskNameTextField.getText().trim().length() == 0) {
-            errorMessage += "No valid task name\n";
+            errorMessage.append("No valid task name\n");
         }
 
         if (errorMessage.length() == 0) {
@@ -157,7 +160,7 @@ public class TaskEditorController implements Initializable {
             alert.initOwner(dialogStage);
             alert.setTitle("Invalid Fields");
             alert.setHeaderText("Please correct invalid fields");
-            alert.setContentText(errorMessage);
+            alert.setContentText(errorMessage.toString());
             alert.showAndWait();
             return false;
         }

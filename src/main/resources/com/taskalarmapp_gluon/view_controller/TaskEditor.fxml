@@ -39,9 +39,9 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Spinner fx:id="hour" prefHeight="26.0" prefWidth="83.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <Spinner fx:id="second" GridPane.columnIndex="5" GridPane.rowIndex="1" />
-                  <Spinner fx:id="minute" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                  <Spinner fx:id="spinHour" prefHeight="26.0" prefWidth="83.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Spinner fx:id="spinSecond" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+                  <Spinner fx:id="spinMinute" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                   <Label text="Hour:" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                   <Label text="Minute:" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
                   <Label text="Second:" GridPane.columnIndex="4" GridPane.halignment="CENTER" GridPane.rowIndex="1" />

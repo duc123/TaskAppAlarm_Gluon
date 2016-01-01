@@ -9,6 +9,7 @@ import com.taskalarmapp_gluon.TaskAlarmApp_Gluon;
 import com.taskalarmapp_gluon.model.Task;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -69,11 +70,32 @@ public class MainViewController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.initModality(Modality.WINDOW_MODAL);
             alert.initOwner(primaryStage);
-            alert.setTitle("An Error");
-            alert.setHeaderText("You did not chose a task");
-            alert.setContentText("Please chose a task");
+            alert.setTitle("Edit Error");
+            alert.setHeaderText("You did not select a task");
+            alert.setContentText("Please select a task");
             alert.showAndWait();
         }
     }
     
+    @FXML
+    private void handleDeleteButton(){
+        int index = danhsachTask.getSelectionModel().getSelectedIndex();
+        if(index != -1){
+            danhsachTask.getItems().remove(index);
+        }
+        else{
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.initModality(Modality.WINDOW_MODAL);
+            alert.initOwner(primaryStage);
+            alert.setTitle("Delete Error");
+            alert.setHeaderText("You did not select a task");
+            alert.setContentText("Please select a task");
+            alert.showAndWait();
+        }
+    }
+    
+    @FXML
+    private void handleExitButton(){
+        mainApp.exit();
+    }
 }

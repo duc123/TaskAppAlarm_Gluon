@@ -53,11 +53,11 @@ public class Task {
     public String toString() {
         return new StringBuilder().append(name.get())
                 .append(" ").append("(")
-                .append(String.valueOf(time.get().getHour() + 1))
+                .append(String.valueOf(time.get().getHour()==23?24:time.get().getHour()))
                 .append(":")
-                .append(String.valueOf(time.get().getMinute() + 1))
+                .append(String.valueOf(time.get().getMinute()==59?60:time.get().getMinute()))
                 .append(":")
-                .append(String.valueOf(time.get().getSecond() + 1))
+                .append(String.valueOf(time.get().getSecond()==59?60:time.get().getSecond()))
                 .append(":)")
                 .toString();
     }
