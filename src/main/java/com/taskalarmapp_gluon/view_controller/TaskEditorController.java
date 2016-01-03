@@ -26,7 +26,7 @@ import org.controlsfx.control.textfield.CustomTextField;
 public class TaskEditorController implements Initializable {
 
     private final static int HOUR_MAX = 24;
-    private final static int HOUR_MIN = 1;
+    private final static int HOUR_MIN = 0;
     private final static int MINUTE_MAX = 60;
     private final static int MINUTE_MIN = 0;
     private final static int SECOND_MAX = 60;

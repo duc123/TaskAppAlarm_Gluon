@@ -140,6 +140,7 @@ public class TaskAlarmApp_Gluon extends Application {
             if(trayIcon != null)
                 tray.remove(trayIcon);
         }
+        System.exit(0);
     }
 
 }
