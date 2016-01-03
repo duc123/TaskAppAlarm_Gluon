@@ -14,6 +14,8 @@
           <Button mnemonicParsing="false" onAction="#handleAddButton" text="Add" />
             <Button mnemonicParsing="false" onAction="#handleDeleteButton" text="Delete" />
             <Button mnemonicParsing="false" onAction="#handleEditButton" text="Edit" />
+            <Button fx:id="startButton" mnemonicParsing="false" onAction="#handleStartButton" text="Start" />
+            <Button fx:id="stopButton" mnemonicParsing="false" onAction="#handleStopButton" text="Stop" />
             <Button mnemonicParsing="false" onAction="#handleExitButton" text="Exit" />
         </buttons>
       </ButtonBar>

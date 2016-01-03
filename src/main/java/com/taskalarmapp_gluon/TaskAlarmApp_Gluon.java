@@ -120,7 +120,8 @@ public class TaskAlarmApp_Gluon extends Application {
             try {
                 tray.add(trayIcon);
             } catch (AWTException ex) {
-                Logger.getLogger(TaskAlarmApp_Gluon.class.getName()).log(Level.SEVERE, null, ex);
+                //Logger.getLogger(TaskAlarmApp_Gluon.class.getName()).log(Level.SEVERE, null, ex);
+                
             }
         } else {
             System.out.println("Tray unavaliable");

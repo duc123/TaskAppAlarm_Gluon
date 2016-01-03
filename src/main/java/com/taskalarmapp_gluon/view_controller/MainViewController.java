@@ -14,8 +14,6 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -25,6 +23,10 @@ import javafx.stage.Stage;
 
 import static java.util.stream.Collectors.*;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.control.Button;
 
 /**
  * FXML Controller class
@@ -35,9 +37,22 @@ public class MainViewController implements Initializable {
 
     private TaskAlarmApp_Gluon mainApp;
     private Stage primaryStage;
+    private Thread timeThread;
+    private final BooleanProperty started;
+    
+    @FXML
+    private Button startButton;
+    @FXML
+    private Button stopButton;
 
     @FXML
     private ListView<Task> danhsachTask;
+
+    public MainViewController() {
+        this.started = new SimpleBooleanProperty(false);
+        //stopButton.setDisable(true);
+        
+    }
 
     /**
      * Initializes the controller class.
@@ -47,34 +62,14 @@ public class MainViewController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        Thread t1 = new Thread(() -> {
-            System.out.println("In thread t1");
-            while(true){
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(MainViewController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                System.out.println("In while loop");
-                if(!danhsachTask.getItems().isEmpty()){
-                    System.out.println("Check timer");
-                    long sleepTime = checkTimer();
-                    System.out.println("Sleep time: " + sleepTime);
-                    try {
-                        if(sleepTime != 0){
-                            System.out.println("Thread Sleep for " + sleepTime);
-                            Thread.sleep(sleepTime);
-                            System.out.println("After Sleep");
-                            Platform.runLater(this::alertTask);
-                        }
-                    } catch (InterruptedException ex) {
-                        Logger.getLogger(MainViewController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    
-                }
-            }
+        started.addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+            startButton.setDisable(newValue);
+            stopButton.setDisable(!newValue);
         });
-        t1.start();
+        started.set(false);
+        stopButton.setDisable(true);
+        if(!danhsachTask.getItems().isEmpty())
+            handleStartButton();
     }
 
     public void setDialogStage(Stage primaryStage) {
@@ -133,18 +128,60 @@ public class MainViewController implements Initializable {
         mainApp.exit();
     }
 
+    @FXML
+    private void handleStartButton() {
+        Thread t1 = new Thread(() -> {
+            System.out.println("In thread t1");
+            while (true) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    //Logger.getLogger(MainViewController.class.getName()).log(Level.SEVERE, null, ex);
+                    break;
+                }
+                System.out.println("In while loop");
+                if (!danhsachTask.getItems().isEmpty()) {
+                    System.out.println("Check timer");
+                    long sleepTime = checkTimer();
+                    System.out.println("Sleep time: " + sleepTime);
+                    try {
+                        if (sleepTime != 0) {
+                            System.out.println("Thread Sleep for " + sleepTime);
+                            Thread.sleep(sleepTime);
+                            System.out.println("After Sleep");
+                            Platform.runLater(this::alertTask);
+                        }
+                    } catch (InterruptedException ex) {
+                        //Logger.getLogger(MainViewController.class.getName()).log(Level.SEVERE, null, ex);
+                        break;
+                    }
+
+                }
+            }
+        });
+        t1.start();
+        started.set(true);
+        timeThread = t1;
+    }
+
+    @FXML
+    private void handleStopButton() {
+        timeThread.interrupt();
+        started.set(false);
+    }
+
     private long checkTimer() {
         LocalTime now = LocalTime.now();
 
         List<Task> tasksAfterNow = danhsachTask.getItems().stream()
                 .filter(t -> t.getTime().getHour() >= now.getHour()
-                 && t.getTime().getMinute() > now.getMinute())
+                        && t.getTime().getMinute() > now.getMinute())
                 .collect(toList());
         if (tasksAfterNow.isEmpty()) {
 //            Optional<Task> task = danhsachTask.getItems().stream()
 //                    .collect(minBy(TaskUtil::compareTaskByTime));
-            long sleep = Duration.between(now, LocalTime.of(23, 59,59)).toMinutes();
-            return sleep*60*1000;
+            long sleep = Duration.between(now, LocalTime.of(23, 59, 59)).toMinutes();
+            return sleep * 60 * 1000;
         } else {
             Optional<Task> task = tasksAfterNow.stream()
                     .collect(minBy(TaskUtil::compareTaskByTime));
@@ -156,24 +193,24 @@ public class MainViewController implements Initializable {
         }
 
     }
-    
-    private void alertTask(){
+
+    private void alertTask() {
         LocalTime now = LocalTime.now();
         StringBuilder tasks = new StringBuilder();
         danhsachTask.getItems().stream()
                 .filter((t) -> t.getTime().getHour() == now.getHour()
-                && t.getTime().getMinute() == now.getMinute())
+                        && t.getTime().getMinute() == now.getMinute())
                 .forEach(t -> {
                     tasks.append(t.getName());
                     tasks.append("\n");
                 });
-        if(tasks.length() != 0){
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.initOwner(primaryStage);
-        alert.setTitle("Ring Ring!!!!");
-        alert.setHeaderText("It's time to do something!!!");
-        alert.setContentText(tasks.toString());
-        alert.showAndWait();
+        if (tasks.length() != 0) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.initOwner(primaryStage);
+            alert.setTitle("Ring Ring!!!!");
+            alert.setHeaderText("It's time to do something!!!");
+            alert.setContentText(tasks.toString());
+            alert.showAndWait();
         }
     }
 }
