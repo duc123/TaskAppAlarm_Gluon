@@ -8,6 +8,7 @@ package com.taskalarmapp_gluon.view_controller;
 import com.taskalarmapp_gluon.TaskAlarmApp_Gluon;
 import com.taskalarmapp_gluon.model.Task;
 import com.taskalarmapp_gluon.model.TaskUtil;
+import java.io.File;
 import java.net.URL;
 import java.time.Duration;
 import java.time.LocalTime;
@@ -27,6 +28,10 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.stage.FileChooser;
+import org.controlsfx.glyphfont.FontAwesome;
 
 /**
  * FXML Controller class
@@ -39,11 +44,17 @@ public class MainViewController implements Initializable {
     private Stage primaryStage;
     private Thread timeThread;
     private final BooleanProperty started;
-    
+
     @FXML
     private Button startButton;
     @FXML
     private Button stopButton;
+    @FXML
+    private Button addButton;
+    @FXML
+    private Button deleteButton;
+    @FXML
+    private Button editButton;
 
     @FXML
     private ListView<Task> danhsachTask;
@@ -51,7 +62,16 @@ public class MainViewController implements Initializable {
     public MainViewController() {
         this.started = new SimpleBooleanProperty(false);
         //stopButton.setDisable(true);
-        
+
+    }
+
+    public List<Task> getDanhSachTasks() {
+        return danhsachTask.getItems();
+    }
+
+    public void setDanhSachTasks(List<Task> tasks) {
+        danhsachTask.getItems().clear();
+        danhsachTask.getItems().addAll(tasks);
     }
 
     /**
@@ -65,11 +85,18 @@ public class MainViewController implements Initializable {
         started.addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
             startButton.setDisable(newValue);
             stopButton.setDisable(!newValue);
+            addButton.setDisable(newValue);
+            deleteButton.setDisable(newValue);
+            editButton.setDisable(newValue);
         });
-        started.set(false);
-        stopButton.setDisable(true);
-        if(!danhsachTask.getItems().isEmpty())
+//        started.set(false);
+//        stopButton.setDisable(true);
+        if (!danhsachTask.getItems().isEmpty()) {
             handleStartButton();
+        } else {
+            handleStartButton();
+            handleStopButton();
+        }
     }
 
     public void setDialogStage(Stage primaryStage) {
@@ -125,7 +152,19 @@ public class MainViewController implements Initializable {
 
     @FXML
     private void handleExitButton() {
-        mainApp.exit();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.getButtonTypes().clear();
+        alert.getButtonTypes().addAll(ButtonType.YES, ButtonType.NO);
+        alert.initModality(Modality.WINDOW_MODAL);
+        alert.initOwner(primaryStage);
+        alert.setTitle("Hold it a minute!!");
+        alert.setHeaderText("You are about to exit the app");
+        alert.setContentText("Are you sure you want to exit?");
+        Optional<ButtonType> answer = alert.showAndWait();
+        //System.out.println(answer.get().getText());
+        if (answer.get().getText().equalsIgnoreCase("yes")) {
+            mainApp.exit();
+        }
     }
 
     @FXML
@@ -168,6 +207,51 @@ public class MainViewController implements Initializable {
     private void handleStopButton() {
         timeThread.interrupt();
         started.set(false);
+    }
+
+    @FXML
+    private void handleNew() {
+        danhsachTask.getItems().clear();
+        mainApp.setTaskFilePath(null);
+    }
+
+    @FXML
+    private void handleOpen() {
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("XML file (*.xml)", "*.xml");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        File file = fileChooser.showSaveDialog(primaryStage);
+
+        if (file != null) {
+            mainApp.loadTaskDataFromFile(file);
+        }
+    }
+
+    @FXML
+    private void handleSave() {
+        File taskFile = mainApp.getTaskFilePath();
+        if (taskFile != null) {
+            mainApp.saveTaskDataToFile(taskFile);
+        } else {
+            handleSaveAs();
+        }
+    }
+
+    @FXML
+    private void handleSaveAs() {
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        File file = fileChooser.showSaveDialog(primaryStage);
+
+        if (file != null) {
+            if (!file.getPath().endsWith(".xml")) {
+                file = new File(file.getPath() + ".xml");
+            }
+            mainApp.saveTaskDataToFile(file);
+        }
     }
 
     private long checkTimer() {
@@ -213,4 +297,5 @@ public class MainViewController implements Initializable {
             alert.showAndWait();
         }
     }
+
 }

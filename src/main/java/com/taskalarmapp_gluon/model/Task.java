@@ -10,6 +10,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  *
@@ -40,7 +41,8 @@ public class Task {
     public void setTime(LocalTime time) {
         this.time.set(time);
     }
-
+    
+    @XmlJavaTypeAdapter(LocalTimeAdapter.class)
     public LocalTime getTime() {
         return this.time.get();
     }

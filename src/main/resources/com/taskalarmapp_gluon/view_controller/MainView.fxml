@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.input.*?>
 <?import org.controlsfx.control.textfield.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
@@ -7,22 +8,62 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.taskalarmapp_gluon.view_controller.MainViewController">
-   <children>
-      <ButtonBar layoutX="393.0" layoutY="360.0" prefHeight="40.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0">
-        <buttons>
-          <Button mnemonicParsing="false" onAction="#handleAddButton" text="Add" />
-            <Button mnemonicParsing="false" onAction="#handleDeleteButton" text="Delete" />
-            <Button mnemonicParsing="false" onAction="#handleEditButton" text="Edit" />
-            <Button fx:id="startButton" mnemonicParsing="false" onAction="#handleStartButton" text="Start" />
-            <Button fx:id="stopButton" mnemonicParsing="false" onAction="#handleStopButton" text="Stop" />
-            <Button mnemonicParsing="false" onAction="#handleExitButton" text="Exit" />
-        </buttons>
-      </ButtonBar>
-      <AnchorPane layoutX="87.0" layoutY="14.0" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+<BorderPane xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.taskalarmapp_gluon.view_controller.MainViewController">
+   <center>
+      <AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0">
          <children>
-            <ListView fx:id="danhsachTask" layoutX="162.0" layoutY="32.0" prefHeight="350.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <ButtonBar layoutX="393.0" layoutY="360.0" prefHeight="40.0" prefWidth="200.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0">
+              <buttons>
+                <Button fx:id="addButton" mnemonicParsing="false" onAction="#handleAddButton" text="Add" />
+                  <Button fx:id="deleteButton" mnemonicParsing="false" onAction="#handleDeleteButton" text="Delete" />
+                  <Button fx:id="editButton" mnemonicParsing="false" onAction="#handleEditButton" text="Edit" />
+                  <Button fx:id="startButton" mnemonicParsing="false" onAction="#handleStartButton" text="Start" />
+                  <Button fx:id="stopButton" mnemonicParsing="false" onAction="#handleStopButton" text="Stop" />
+                  <Button mnemonicParsing="false" onAction="#handleExitButton" text="Exit" />
+              </buttons>
+            </ButtonBar>
+            <AnchorPane layoutX="87.0" layoutY="14.0" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <ListView fx:id="danhsachTask" layoutX="162.0" layoutY="32.0" prefHeight="350.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
          </children>
       </AnchorPane>
-   </children>
-</AnchorPane>
+   </center>
+   <top>
+      <MenuBar BorderPane.alignment="CENTER">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#handleOpen" text="Open">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+                  </MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#handleSaveAs" text="Save As" />
+                  <MenuItem mnemonicParsing="false" onAction="#handleSave" text="Save">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+                  </MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#handleNew" text="New">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
+                     </accelerator>
+                  </MenuItem>
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+   </top>
+</BorderPane>
