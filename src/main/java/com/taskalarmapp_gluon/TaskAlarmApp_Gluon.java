@@ -29,7 +29,6 @@ import javafx.stage.Stage;
 import javax.imageio.ImageIO;
 import javax.swing.SwingUtilities;
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
@@ -71,7 +70,8 @@ public class TaskAlarmApp_Gluon extends Application {
             if (file != null) {
                 loadTaskDataFromFile(file);
             }
-        } catch (IOException ex) {
+            mainViewController.start();
+        } catch (Exception ex) {
             Logger.getLogger(TaskAlarmApp_Gluon.class.getName()).log(Level.SEVERE, null, ex);
             return Optional.empty();
         }

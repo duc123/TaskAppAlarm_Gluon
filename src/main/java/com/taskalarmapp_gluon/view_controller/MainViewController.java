@@ -28,10 +28,9 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import javafx.scene.media.AudioClip;
 import javafx.stage.FileChooser;
-import org.controlsfx.glyphfont.FontAwesome;
 
 /**
  * FXML Controller class
@@ -44,6 +43,7 @@ public class MainViewController implements Initializable {
     private Stage primaryStage;
     private Thread timeThread;
     private final BooleanProperty started;
+    private AudioClip audioClip = null;
 
     @FXML
     private Button startButton;
@@ -61,8 +61,15 @@ public class MainViewController implements Initializable {
 
     public MainViewController() {
         this.started = new SimpleBooleanProperty(false);
+        URL soundURL = this.getClass().getClassLoader().getResource("sound/Loud_Alarm_Clock_Buzzer.wav");
+        if(soundURL == null)
+        {
+            showAlert();
+        }else{
+            audioClip = new AudioClip(soundURL.toExternalForm());
+            audioClip.setPriority(1);
+        }
         //stopButton.setDisable(true);
-
     }
 
     public List<Task> getDanhSachTasks() {
@@ -91,6 +98,9 @@ public class MainViewController implements Initializable {
         });
 //        started.set(false);
 //        stopButton.setDisable(true);
+    }
+
+    public void start() {
         if (!danhsachTask.getItems().isEmpty()) {
             handleStartButton();
         } else {
@@ -294,7 +304,26 @@ public class MainViewController implements Initializable {
             alert.setTitle("Ring Ring!!!!");
             alert.setHeaderText("It's time to do something!!!");
             alert.setContentText(tasks.toString());
+            playMusic();
             alert.showAndWait();
+            playMusic();
+        }
+    }
+
+    private void showAlert() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error!");
+        alert.setHeaderText("Can not load sound file");
+        alert.setContentText("File sound is corrupt or does not exists");
+        alert.show();
+    }
+    
+    private void playMusic(){
+        if(audioClip != null){
+            if(!audioClip.isPlaying())
+                audioClip.play();
+            else
+                audioClip.stop();
         }
     }
 
